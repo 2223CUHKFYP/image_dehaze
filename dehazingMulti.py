@@ -120,18 +120,19 @@ if __name__ == '__main__':
     print("test")
     
     parser = argparse.ArgumentParser(description='Process images in a directory.')
-    parser.add_argument('input_path', type=str, help='Path to the input directory.')
-    parser.add_argument('output_path', type=str, help='Path to the output directory.')
+    parser.add_argument('--input_path', type=str, help='Path to the input directory.' )
+    parser.add_argument('--output_path', type=str, help='Path to the output directory.')
 
+    args = parser.parse_args()
 
     # get a list of file paths for all PNG files in the current directory
-    imagePath = list_files(input_path)
+    imagePath = list_files(args.input_path)
 
     # create a process pool with the number of available CPU cores
     pool = Pool(cpu_count())
 
     # use functools.partial to fix output_path argument
-    process_image_with_output_path = partial(process_image, output_path=output_path)
+    process_image_with_output_path = partial(process_image, output_path=args.output_path)
 
     # use tqdm to display a progress bar
     for _ in tqdm(pool.imap_unordered(process_image_with_output_path, imagePath), total=len(imagePath)):
